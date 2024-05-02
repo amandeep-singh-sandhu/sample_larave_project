@@ -16,23 +16,29 @@ class NoteController extends Controller
         // Redis::set('name', 'John');
         // Redis::set('name2', 'Vikas');
         // dd(Redis::get('name2'));
+        // set default timezone to IST (Asia/Kolkata) - comment out if you want to use system default timezone
+        // date_default_timezone_set('Asia/Kolkata');
+
+        // get current timezone
+        date_default_timezone_set(date_default_timezone_get());
+
+        // get current time
+        $time = date('h:i:s A');
+        
+        // get current date in format "YYYY-MM-DD"
+        $date = date('Y-m-d');  // current date in "YYYY-MM-DD" format - used for filtering notes by date
 
         // save signed in user's information in redis server
         $redis = Redis::connection();
         $redis->set('user_'.request()->user()->id, request()->user()->name);
-
-
-        
+        $redis->set('email_'.request()->user()->id, request()->user()->email);
+        $redis->set('login_time_'.request()->user()->id, $time . ' - ' . $date);
         $notes = Note::query()
             ->where('user_id', request()->user()->id)
             ->orderBy('created_at', 'desc')
             ->paginate();
         // dd($notes);
         return view('note.index', ['notes' => $notes]);
-
-
-        // write to redis
-
     }
 
     /**
