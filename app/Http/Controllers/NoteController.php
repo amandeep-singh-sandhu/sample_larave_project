@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Note;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Redis;
 
 class NoteController extends Controller
 {
@@ -12,12 +13,26 @@ class NoteController extends Controller
      */
     public function index()
     {
+        // Redis::set('name', 'John');
+        // Redis::set('name2', 'Vikas');
+        // dd(Redis::get('name2'));
+
+        // save signed in user's information in redis server
+        $redis = Redis::connection();
+        $redis->set('user_'.request()->user()->id, request()->user()->name);
+
+
+        
         $notes = Note::query()
             ->where('user_id', request()->user()->id)
             ->orderBy('created_at', 'desc')
             ->paginate();
         // dd($notes);
         return view('note.index', ['notes' => $notes]);
+
+
+        // write to redis
+
     }
 
     /**
