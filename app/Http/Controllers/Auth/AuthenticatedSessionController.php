@@ -31,14 +31,14 @@ class AuthenticatedSessionController extends Controller
 
     public function create(Request $request): View
     {
-        $failedLoginAttempts = Redis::get('failed_login_attempts_' . $request->ip());
-        if ($failedLoginAttempts === null) {
-            Redis::setex('failed_login_attempts_' . $request->ip(), 300, 1);
-        } elseif ((int)$failedLoginAttempts < 5) {
-            Redis::incr('failed_login_attempts_' . $request->ip());
-        } else {
-            return view('auth.login')->with('errors', ['email' => 'You have exceeded the maximum number of login attempts.']);
-        }
+        // $failedLoginAttempts = Redis::get('failed_login_attempts_' . $request->ip());
+        // if ($failedLoginAttempts === null) {
+        //     Redis::setex('failed_login_attempts_' . $request->ip(), 300, 1);
+        // } elseif ((int)$failedLoginAttempts < 5) {
+        //     Redis::incr('failed_login_attempts_' . $request->ip());
+        // } else {
+        //     return view('auth.login')->with('errors', ['email' => 'You have exceeded the maximum number of login attempts.']);
+        // }
 
         return view('auth.login');
     }
